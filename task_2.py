@@ -3,8 +3,9 @@ import sys
 import timeit
 from functools import lru_cache
 from splay_tree import SplayTree
+from matplotlib import pyplot as plt
 
-sys.setrecursionlimit(3000)
+sys.setrecursionlimit(9000)
 
 
 @lru_cache(maxsize=1000)
@@ -29,6 +30,20 @@ def measure_time(func, *args):
     return execution_time
 
 
+def plot_results(results):
+    x = [x for x in results.keys()]
+    y_lru = [results[seed]["lru"] for seed in results.keys()]
+    y_splay = [results[seed]["splay"] for seed in results.keys()]
+
+    plt.plot(x, y_lru, label="LRU")
+    plt.plot(x, y_splay, label="Splay")
+    plt.xlabel("N")
+    plt.ylabel("Execution time (s)")
+    plt.title("Execution time of Fibonacci sequence calculation")
+    plt.legend()
+    plt.show()
+
+
 def main():
     fibonacci_seed_list = [x * 50 for x in range(20)]
     results = defaultdict(dict)
@@ -46,6 +61,7 @@ def main():
                 seed, round(values["lru"], 10), round(values["splay"], 10)
             )
         )
+    plot_results(results)
 
 
 if __name__ == "__main__":
